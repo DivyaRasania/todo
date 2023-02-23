@@ -38,28 +38,6 @@ function removeTodo(idToDelete) {
     saveTodos();
 }
 
-function setEditing(todoId) {
-    todos.forEach(function (todo) {
-        if (todo.id === todoId) {
-            todo.isEditing = true;
-        }
-    });
-
-    saveTodos();
-}
-
-function updateTodo(todoId, newTitle, newDate) {
-    todos.forEach(function (todo) {
-        if (todo.id === todoId) {
-            todo.title = newTitle;
-            todo.dueDate = newDate;
-            todo.isEditing = false;
-        }
-    });
-
-    saveTodos();
-}
-
 function saveTodos() {
     localStorage.setItem('todos', JSON.stringify(todos));
 }
@@ -84,30 +62,6 @@ function deleteTodo(event) {
     render();
 }
 
-// I forgot to mention: usually for these click handler function we like to name them
-// starting  with "on" (onAdd, onDelete, onEdit, etc.) I'll revise for the 2022 tutorial!
-function onEdit(event) {
-    const editButton = event.target;
-    const todoId = editButton.dataset.todoId;
-
-    setEditing(todoId);
-    render();
-}
-
-function onUpdate(event) {
-    const updateButton = event.target;
-    const todoId = updateButton.dataset.todoId;
-
-    const textbox = document.getElementById('edit-title-' + todoId);
-    const newTitle = textbox.value;
-
-    const datePicker = document.getElementById('edit-date-' + todoId);
-    const newDate = datePicker.value;
-
-    updateTodo(todoId, newTitle, newDate);
-    render();
-}
-
 // View
 function render() {
     // reset our list
@@ -115,45 +69,14 @@ function render() {
 
     todos.forEach(function (todo) {
         const element = document.createElement('div');
+        element.innerText = todo.title + ' ' + todo.dueDate;
 
-        // If this todo is being edited, render a textbox, date picker and a
-        // button for saving the edits.
-        if (todo.isEditing === true) {
-            const textbox = document.createElement('input');
-            textbox.type = 'text';
-            textbox.id = 'edit-title-' + todo.id;
-            element.appendChild(textbox);
-
-            const datePicker = document.createElement('input');
-            datePicker.type = 'date';
-            datePicker.id = 'edit-date-' + todo.id;
-            element.appendChild(datePicker);
-
-            const updateButton = document.createElement('button');
-            updateButton.innerText = 'Update';
-            updateButton.dataset.todoId = todo.id;
-            updateButton.onclick = onUpdate;
-            element.appendChild(updateButton);
-
-            // If this todo is not being edited, render what we had before
-            // and add an "Edit" button.
-        } else {
-            element.innerText = todo.title + ' ' + todo.dueDate;
-
-            const editButton = document.createElement('button');
-            editButton.innerText = 'Edit';
-            editButton.style = 'margin-left: 12px';
-            editButton.onclick = onEdit;
-            editButton.dataset.todoId = todo.id;
-            element.appendChild(editButton);
-
-            const deleteButton = document.createElement('button');
-            deleteButton.innerText = 'Delete';
-            deleteButton.style = 'margin-left: 12px';
-            deleteButton.onclick = deleteTodo;
-            deleteButton.id = todo.id;
-            element.appendChild(deleteButton);
-        }
+        const deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete';
+        deleteButton.style = 'margin-left: 12px';
+        deleteButton.onclick = deleteTodo;
+        deleteButton.id = todo.id;
+        element.appendChild(deleteButton);
 
         const todoList = document.getElementById('todo-list');
         todoList.appendChild(element);
