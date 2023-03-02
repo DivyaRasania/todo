@@ -8,6 +8,8 @@ const savedTodos = JSON.parse(localStorage.getItem('todos'));
 // Check if it's an array
 if (Array.isArray(savedTodos)) {
     todos = savedTodos;
+} else {
+    todos = [];
 }
 
 // Creates a todo
